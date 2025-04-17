@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Artists</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="page-title-container">
+        <img
+          src="../images/music-note.png"
+          alt="Music Icon"
+          class="music-note-img"
+        />
+        <h1 class="page-title">Artists</h1>
+        <img
+          src="../images/music-note.png"
+          alt="Music Icon"
+          class="music-note-img"
+        />
+      </div>
+      <nav class="page-nav-container">
+        <a href="../index.html">Home</a> | <a href="./vinyls.html">Vinyls</a> |
+        <a href="./artists.html">Artists</a> |
+        <a href="./patrons.html">Patrons</a> |
+        <a href="./rentals.html">Rentals</a>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <table class="page-table">
+        <thead>
+          <tr>
+            <th>Artist ID</th>
+            <th>Artist</th>
+            <th>Genre</th>
+            <th>Country of Origin</th>
+          </tr>
+        </thead>
+        <tbody id="artists-table"></tbody>
+      </table>
+
+      <div class="crud-container">
+        <div class="crud-section">
+          <h2 class="crud-section-title">Add New Artist</h2>
+          <form id="add-artist-form">
+            <label
+              >Artist Name:
+              <input type="text" name="artistName" required /></label
+            ><br />
+            <label>Genre: <input type="text" name="genre" required /></label
+            ><br />
+            <label
+              >Country of Origin:
+              <input type="text" name="countryOrigin" required /></label
+            ><br />
+            <button type="submit">Add Artist</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2025 Mean Street Vinyls | Greg Preiss</p>
+    </footer>
+
+    <script src="../javascript/artists.js"></script>
+  </body>
+</html>

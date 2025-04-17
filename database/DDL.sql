@@ -7,7 +7,55 @@ SET AUTOCOMMIT=0;
 -- -----------------------------------------------------
 -- Drop Existing Tables if They Exist (to prevent conflicts)
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS Artists;
 DROP TABLE IF EXISTS Patrons;
+
+-- -----------------------------------------------------
+-- Create Table: Artists
+-- -----------------------------------------------------
+CREATE TABLE Artists (
+    artistID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    artistName VARCHAR(100) NOT NULL,
+    genre VARCHAR(100) NOT NULL,
+    countryOrigin VARCHAR(100) NOT NULL,
+    PRIMARY KEY (artistID)
+);
+
+-- -----------------------------------------------------
+-- Insert Sample Data: Artists
+-- -----------------------------------------------------
+INSERT INTO Artists (artistName, genre, countryOrigin) VALUES
+    ('Metallica', 'Metal', "USA"),
+    ('Van Halen', 'Classic Rock', "USA"),
+    ('Beatles', 'Classic Rock', "UK");
+
+-- -----------------------------------------------------
+-- Stored Procedure: GetArtists
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS GetArtists;
+DELIMITER //
+CREATE PROCEDURE GetArtists()
+BEGIN
+    SELECT artistID, artistName, genre, countryOrigin FROM Artists ORDER BY artistID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Stored Procedure: AddArtist
+-- -----------------------------------------------------
+
+DROP PROCEDURE IF EXISTS AddArtist;
+DELIMITER //
+CREATE PROCEDURE AddArtist (
+    IN p_artistName VARCHAR(100),
+    IN p_genre VARCHAR(100),
+    IN p_countryOrigin VARCHAR(100)
+)
+BEGIN
+    INSERT INTO Artists (artistName, genre, countryOrigin)
+    VALUES (p_artistName, p_genre, p_countryOrigin);
+END //
+DELIMITER ;
 
 -- -----------------------------------------------------
 -- Create Table: Patrons

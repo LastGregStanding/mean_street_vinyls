@@ -30,7 +30,7 @@ const loadPatrons = async () => {
 
 // Handle form submission to add a new patron
 const form = document.getElementById("add-patron-form");
-form.addEventListener("submit", async function (e) {
+form?.addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const formData = new FormData(e.target);
