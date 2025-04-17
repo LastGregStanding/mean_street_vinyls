@@ -8,6 +8,10 @@ app.use(express.json());
 //  Static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// Routes
+const patronRoutes = require("./routes/patronRoutes");
+app.use("/api/patrons", patronRoutes);
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).send("404 - Page Not Found");
