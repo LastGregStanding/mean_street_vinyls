@@ -20,3 +20,14 @@ exports.addArtist = async (req, res) => {
     res.status(500).json({ error: "Database error." });
   }
 };
+
+exports.deleteArtist = async (req, res) => {
+  const artistId = req.params.id;
+  try {
+    Artist.deleteArtist(artistId);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting artist:", error);
+    res.status(500).json({ error: "Database error." });
+  }
+};

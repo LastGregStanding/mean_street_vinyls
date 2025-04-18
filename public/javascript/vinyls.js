@@ -18,6 +18,9 @@ const loadVinyls = async () => {
     // Populate the dropdown
     deleteVinylDropdown.innerHTML = '<option value="">Select a Vinyl</option>';
 
+    // Sort the data in alphabetical order by vinyl name
+    data.sort((a, b) => a.title.localeCompare(b.title));
+
     data.forEach((vinyl) => {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -32,7 +35,7 @@ const loadVinyls = async () => {
       // Load the Delete Vinyl Dropdown
       const option = document.createElement("option");
       option.value = vinyl.vinylID;
-      option.textContent = `${vinyl.artistName}-${vinyl.title}(${vinyl.yearReleased})`;
+      option.textContent = `${vinyl.title} - ${vinyl.artistName} (${vinyl.yearReleased})`;
       deleteVinylDropdown.appendChild(option);
     });
   } catch (error) {

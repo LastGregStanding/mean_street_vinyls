@@ -141,6 +141,18 @@ END //
 DELIMITER ;
 
 -- -----------------------------------------------------
+-- Stored Procedure: DeleteArtist
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS DeleteArtist;
+DELIMITER //
+CREATE PROCEDURE DeleteArtist(IN p_artistID INT)
+BEGIN
+    DELETE FROM Artists
+    WHERE artistID = p_artistID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- Create Table: Patrons
 -- -----------------------------------------------------
 CREATE TABLE Patrons (
