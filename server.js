@@ -15,6 +15,9 @@ app.use("/api/patrons", patronRoutes);
 const artistRoutes = require("./routes/artistRoutes");
 app.use("/api/artists", artistRoutes);
 
+const vinylRoutes = require("./routes/vinylRoutes");
+app.use("/api/vinyls", vinylRoutes);
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).send("404 - Page Not Found");
