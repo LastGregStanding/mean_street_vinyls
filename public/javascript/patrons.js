@@ -1,3 +1,8 @@
+// Load delete patron dropdown
+const deletePatronDropdown = document.getElementById("delete-patron-dropdown");
+// Populate the dropdown
+deletePatronDropdown.innerHTML = '<option value="">Select Patron</option>';
+
 // Fetch patrons from the backend and update the patrons table
 const loadPatrons = async () => {
   try {
@@ -22,6 +27,12 @@ const loadPatrons = async () => {
                               <td>${formattedDate}</td>
                           `;
       table.appendChild(row);
+
+      // Load the Delete Patron Dropdown
+      const option = document.createElement("option");
+      option.value = patron.patronID;
+      option.textContent = `${patron.firstName} ${patron.lastName}`;
+      deletePatronDropdown.appendChild(option);
     });
   } catch (error) {
     console.error("Error loading patrons:", error);
@@ -56,6 +67,26 @@ form?.addEventListener("submit", async function (e) {
     }
   } catch (error) {
     console.error("Error:", error);
+  }
+});
+
+const deletePatronForm = document.getElementById("delete-patron-form");
+
+// Delete a patron
+deletePatronForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const patronID = document.getElementById("delete-patron-dropdown").value;
+
+  try {
+    const response = await fetch(`/api/patrons/${patronID}`, {
+      method: "DELETE",
+    });
+    alert("Patron deleted!");
+    loadPatrons();
+  } catch (error) {
+    console.error("Error deleting patron:", error);
+    alert("Error deleting patron: " + error.message);
   }
 });
 

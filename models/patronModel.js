@@ -8,3 +8,7 @@ exports.addPatron = (firstName, lastName, membershipDate) =>
   pool
     .promise()
     .query("CALL AddPatron(?, ?, ?)", [firstName, lastName, membershipDate]);
+
+// Delete a patron
+exports.deletePatron = (patronId) =>
+  pool.promise().query("CALL DeletePatron(?)", [patronId]);

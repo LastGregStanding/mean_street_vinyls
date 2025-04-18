@@ -200,6 +200,18 @@ END //
 DELIMITER ;
 
 -- -----------------------------------------------------
+-- Stored Procedure: DeletePatron
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS DeletePatron;
+DELIMITER //
+CREATE PROCEDURE DeletePatron(IN p_patronID INT)
+BEGIN
+    DELETE FROM Patrons
+    WHERE patronID = p_patronID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- Create Table: Rentals 
 -- -----------------------------------------------------
 CREATE TABLE Rentals (
