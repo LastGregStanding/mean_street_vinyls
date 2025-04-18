@@ -43,6 +43,7 @@
         <tbody id="vinyls-table"></tbody>
       </table>
 
+      <!-- Add a vinyl -->
       <div class="crud-container">
         <div class="crud-section">
           <h2 class="crud-section-title">Add New Vinyl</h2>
@@ -64,6 +65,20 @@
               <select name="artistID" id="artist-dropdown"></select>
             </label>
             <button type="submit">Add Vinyl</button>
+          </form>
+        </div>
+
+        <!-- Delete a Vinyl -->
+        <div class="crud-section">
+          <h2 class="crud-section-title">Delete Vinyl</h2>
+          <form id="delete-vinyl-form">
+            <label
+              >Select Vinyl:
+              <select name="deleteVinylID" id="delete-vinyl-dropdown" required>
+                <option value="">Select a Vinyl</option>
+              </select>
+            </label>
+            <button type="submit">Delete Vinyl</button>
           </form>
         </div>
       </div>

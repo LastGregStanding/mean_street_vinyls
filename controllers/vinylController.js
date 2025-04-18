@@ -30,3 +30,14 @@ exports.addVinyl = async (req, res) => {
     res.status(500).json({ error: "Database error." });
   }
 };
+
+exports.deleteVinyl = async (req, res) => {
+  const vinylId = req.params.id;
+  try {
+    Vinyl.deleteVinyl(vinylId);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting vinyl:", error);
+    res.status(500).json({ error: "Database error." });
+  }
+};

@@ -12,3 +12,7 @@ exports.addVinyl = (title, label, yearReleased, artistID) =>
   pool
     .promise()
     .query("CALL AddVinyl(?, ?, ?, ?)", [title, label, yearReleased, artistID]);
+
+// Delete a vinyl
+exports.deleteVinyl = (vinylId) =>
+  pool.promise().query("CALL DeleteVinyl(?)", [vinylId]);

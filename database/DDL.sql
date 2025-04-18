@@ -82,6 +82,18 @@ END //
 DELIMITER ;
 
 -- -----------------------------------------------------
+-- Stored Procedure: DeleteVinyl
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS DeleteVinyl;
+DELIMITER //
+CREATE PROCEDURE DeleteVinyl(IN p_vinylID INT)
+BEGIN
+    DELETE FROM Vinyls
+    WHERE vinylID = p_vinylID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- Create Table: Artists
 -- -----------------------------------------------------
 CREATE TABLE Artists (

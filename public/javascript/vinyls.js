@@ -1,3 +1,8 @@
+function refreshData() {
+  loadVinyls();
+  loadArtists();
+}
+
 // Fetch vinyls from the backend and update the table
 const loadVinyls = async () => {
   try {
@@ -5,6 +10,13 @@ const loadVinyls = async () => {
     const [data] = await response.json();
     const table = document.getElementById("vinyls-table");
     table.innerHTML = "";
+
+    // Load delete vinyl dropdown
+    const deleteVinylDropdown = document.getElementById(
+      "delete-vinyl-dropdown"
+    );
+    // Populate the dropdown
+    deleteVinylDropdown.innerHTML = '<option value="">Select a Vinyl</option>';
 
     data.forEach((vinyl) => {
       const row = document.createElement("tr");
@@ -16,6 +28,12 @@ const loadVinyls = async () => {
                         <td>${vinyl.yearReleased}</td>
                     `;
       table.appendChild(row);
+
+      // Load the Delete Vinyl Dropdown
+      const option = document.createElement("option");
+      option.value = vinyl.vinylID;
+      option.textContent = `${vinyl.artistName}-${vinyl.title}(${vinyl.yearReleased})`;
+      deleteVinylDropdown.appendChild(option);
     });
   } catch (error) {
     console.error("Error loading vinyls:", error);
@@ -65,7 +83,7 @@ form.addEventListener("submit", async function (e) {
 
     if (data.success) {
       alert("Vinyl added successfully!");
-      loadVinyls();
+      refreshData();
       e.target.reset();
     } else {
       alert("Error adding vinyl: " + data.error);
@@ -75,8 +93,25 @@ form.addEventListener("submit", async function (e) {
   }
 });
 
-// Load the vinyls and artists when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-  loadVinyls();
-  loadArtists();
+const deleteVinylForm = document.getElementById("delete-vinyl-form");
+
+// Delete a vinyl
+deleteVinylForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const vinylID = document.getElementById("delete-vinyl-dropdown").value;
+
+  try {
+    const response = await fetch(`/api/vinyls/${vinylID}`, {
+      method: "DELETE",
+    });
+    alert("Vinyl deleted!");
+    refreshData();
+  } catch (error) {
+    console.error("Error deleting vinyl:", error);
+    alert("Error deleting vinyl: " + error.message);
+  }
 });
+
+// Load the vinyls and artists when the page loads
+document.addEventListener("DOMContentLoaded", refreshData);
