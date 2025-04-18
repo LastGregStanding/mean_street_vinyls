@@ -6,7 +6,6 @@ const loadArtists = async () => {
     const table = document.getElementById("artists-table");
     table.innerHTML = "";
     data.forEach((artist) => {
-      console.log(artist);
       const row = document.createElement("tr");
       row.innerHTML = `
                       <td>${artist.artistID}</td>
