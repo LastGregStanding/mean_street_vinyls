@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Rentals</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="page-title-container">
+        <img
+          src="../images/music-note.png"
+          alt="Music Icon"
+          class="music-note-img"
+        />
+        <h1 class="page-title">Rentals</h1>
+        <img
+          src="../images/music-note.png"
+          alt="Music Icon"
+          class="music-note-img"
+        />
+      </div>
+      <nav class="page-nav-container">
+        <a href="../index.html">Home</a> | <a href="./vinyls.html">Vinyls</a> |
+        <a href="./artists.html">Artists</a> |
+        <a href="./patrons.html">Patrons</a> |
+        <a href="./rentals.html">Rentals</a>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <table class="page-table">
+        <thead>
+          <tr>
+            <th>Rental ID</th>
+            <th>Vinyl</th>
+            <th>Patron</th>
+            <th>Rental Date</th>
+            <th>Return Date</th>
+          </tr>
+        </thead>
+        <tbody id="rentals-table"></tbody>
+      </table>
+
+      <div class="crud-container-rentals">
+        <!-- Add New Rental Section -->
+        <div class="crud-section-rentals crud-section">
+          <h2 class="crud-section-title">Add New Rental</h2>
+          <form id="add-rental-form">
+            <label
+              >Vinyl:
+              <select name="vinylID" id="vinyl-dropdown" required>
+                <option value="">Select a Vinyl</option>
+              </select> </label
+            ><br />
+
+            <label
+              >Patron:
+              <select name="patronID" id="patron-dropdown" required>
+                <option value="">Select a Patron</option>
+              </select> </label
+            ><br />
+
+            <label
+              >Rental Date:
+              <input type="date" name="rentalDate" required /></label
+            ><br />
+            <button type="submit">Add Rental</button>
+          </form>
+        </div>
+
+        <!-- Delete Rental Section -->
+        <div class="crud-section-rentals crud-section">
+          <h2 class="crud-section-title">Delete Rental</h2>
+          <form id="delete-rental-form">
+            <label
+              >Select Rental:
+              <select
+                name="deleteRentalID"
+                id="delete-rental-dropdown"
+                required
+              >
+                <option value="">Select a Rental</option>
+              </select> </label
+            ><br />
+
+            <button type="submit">Delete Rental</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2025 Mean Street Vinyls | Greg Preiss</p>
+    </footer>
+    <script src="../javascript/rentals.js"></script>
+  </body>
+</html>

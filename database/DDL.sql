@@ -10,6 +10,7 @@ SET AUTOCOMMIT=0;
 DROP TABLE IF EXISTS Vinyls;
 DROP TABLE IF EXISTS Artists;
 DROP TABLE IF EXISTS Patrons;
+DROP TABLE IF EXISTS Rentals;
 
 -- -----------------------------------------------------
 -- Create Table: Vinyls
@@ -171,6 +172,80 @@ CREATE PROCEDURE AddPatron (
 BEGIN
     INSERT INTO Patrons (firstName, lastName, membershipDate)
     VALUES (p_firstName, p_lastName, p_membershipDate);
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Create Table: Rentals 
+-- -----------------------------------------------------
+CREATE TABLE Rentals (
+    rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
+    vinylID INT NOT NULL,
+    patronID INT NOT NULL,
+    rentalDate DATE NOT NULL,
+    returnDate DATE NULL,
+    PRIMARY KEY (rentalID),
+    FOREIGN KEY (vinylID) REFERENCES Vinyls(vinylID) ON DELETE CASCADE,
+    FOREIGN KEY (patronID) REFERENCES Patrons(patronID) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------
+-- Insert Sample Data: Rentals (Demonstrating M:N Relationship)
+-- -----------------------------------------------------
+INSERT INTO Rentals (vinylID, patronID, rentalDate, returnDate) VALUES
+   (1, 1, '2024-11-28', '2024-12-29'),
+   (2, 1, '2024-12-22', '2025-01-02'),
+   (3, 2, '2025-01-03', '2025-01-25'),
+   (3, 3, '2025-01-29', NULL),  
+   (4, 3, '2025-02-01', NULL);  
+
+-- -----------------------------------------------------
+-- Stored Procedure: AddRental
+-- -----------------------------------------------------
+
+DROP PROCEDURE IF EXISTS AddRental;
+DELIMITER //
+CREATE PROCEDURE AddRental (
+    IN p_vinylID INT,
+    IN p_patronID INT,
+    IN p_rentalDate DATE
+)
+BEGIN
+    INSERT INTO Rentals (vinylID, patronID, rentalDate)
+    VALUES (p_vinylID, p_patronID, p_rentalDate);
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Stored Procedure: GetRentals
+-- -----------------------------------------------------
+
+DROP PROCEDURE IF EXISTS GetRentals;
+DELIMITER //
+CREATE PROCEDURE GetRentals()
+BEGIN
+    SELECT
+        Rentals.rentalID,
+        CONCAT(Vinyls.title, ' (', Vinyls.yearReleased, ')') AS vinylTitle,
+        CONCAT(Patrons.firstName, ' ', Patrons.lastName, ' (Joined: ', Patrons.membershipDate, ')') AS patronName,
+        Rentals.rentalDate,
+        Rentals.returnDate
+    FROM Rentals
+    JOIN Vinyls ON Rentals.vinylID = Vinyls.vinylID
+    JOIN Patrons ON Rentals.patronID = Patrons.patronID
+    ORDER BY Rentals.rentalID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Stored Procedure: DeleteRental
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS DeleteRental;
+DELIMITER //
+CREATE PROCEDURE DeleteRental(IN p_rentalID INT)
+BEGIN
+    DELETE FROM Rentals
+    WHERE rentalID = p_rentalID;
 END //
 DELIMITER ;
 

@@ -137,6 +137,45 @@ th {
   text-align: center;
 }
 
+/************ Rental Page Crud ***********/
+
+.page-content {
+  /* outline: 3px solid red; */
+}
+
+.crud-container-rentals {
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.loan-table-crud-container {
+  display: grid;
+  place-items: center;
+}
+
+.crud-container-loans {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr;
+  margin-top: 30px;
+  gap: 50px;
+  width: 80%;
+}
+
+@media (max-width: 1100px) {
+  .crud-container-rentals {
+    grid-template-columns: 2fr 2fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .crud-container-rentals {
+    grid-template-columns: 1fr;
+    width: 55%;
+  }
+}
+
 /************ Form **************/
 
 form {
