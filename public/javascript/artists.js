@@ -85,7 +85,7 @@ deleteArtistForm.addEventListener("submit", async (e) => {
     loadArtists();
   } catch (error) {
     console.error("Error deleting artist:", error);
-    alert("Error deleting vinyl: " + error.message);
+    alert("Error deleting artist: " + error.message);
   }
 });
 
