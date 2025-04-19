@@ -55,7 +55,6 @@ const loadRentals = async () => {
       }
       const row = document.createElement("tr");
       row.innerHTML = `
-                          <td>${rental.rentalID}</td>
                           <td>${rental.vinylTitle}</td>
                           <td>${rental.patronName}</td>
                           <td>${formattedDateOfRental}</td>

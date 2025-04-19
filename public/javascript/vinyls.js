@@ -24,7 +24,6 @@ const loadVinyls = async () => {
     data.forEach((vinyl) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-                        <td>${vinyl.vinylID}</td>
                         <td>${vinyl.title}</td>
                         <td>${vinyl.artistName}</td>  
                         <td>${vinyl.label}</td>

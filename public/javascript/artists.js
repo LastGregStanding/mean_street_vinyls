@@ -18,7 +18,6 @@ const loadArtists = async () => {
     data.forEach((artist) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-                      <td>${artist.artistID}</td>
                       <td>${artist.artistName}</td>
                       <td>${artist.genre}</td>
                       <td>${artist.countryOrigin}</td>

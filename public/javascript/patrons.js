@@ -21,7 +21,6 @@ const loadPatrons = async () => {
       )}-${String(date.getDate()).padStart(2, "0")}-${date.getFullYear()}`;
       const row = document.createElement("tr");
       row.innerHTML = `
-                              <td>${patron.patronID}</td>
                               <td>${patron.firstName}</td>
                               <td>${patron.lastName}</td>
                               <td>${formattedDate}</td>
