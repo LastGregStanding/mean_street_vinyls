@@ -274,6 +274,35 @@ END //
 DELIMITER ;
 
 -- -----------------------------------------------------
+-- Stored Procedure: GetSpecificRental
+-- -----------------------------------------------------
+
+DROP PROCEDURE IF EXISTS GetSpecificRental;
+DELIMITER //
+CREATE PROCEDURE GetSpecificRental(IN p_rentalID INT)
+BEGIN
+    SELECT
+        Rentals.rentalDate,
+        Rentals.returnDate
+    FROM Rentals
+    WHERE rentalID = p_rentalID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- Stored Procedure: UpdateReturnDate
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS UpdateReturnDate;
+DELIMITER //
+CREATE PROCEDURE UpdateReturnDate(IN p_rentalID INT, IN p_newReturnDate DATE)
+BEGIN
+    UPDATE Rentals
+    SET returnDate = p_newReturnDate
+    WHERE rentalID = p_rentalID;
+END //
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- Stored Procedure: DeleteRental
 -- -----------------------------------------------------
 DROP PROCEDURE IF EXISTS DeleteRental;

@@ -53,19 +53,35 @@
                 <option value="">Select a Vinyl</option>
               </select> </label
             ><br />
-
             <label
               >Patron:
               <select name="patronID" id="patron-dropdown" required>
                 <option value="">Select a Patron</option>
               </select> </label
             ><br />
-
             <label
               >Rental Date:
               <input type="date" name="rentalDate" required /></label
             ><br />
             <button type="submit">Add Rental</button>
+          </form>
+        </div>
+
+        <!-- Update Return Date Section -->
+        <div class="crud-section-rentals crud-section">
+          <h2 class="crud-section-title">Update Return Date</h2>
+          <form id="update-return-date-form">
+            <label
+              >Select Rental:
+              <select name="rentalID" id="update-return-date-dropdown" required>
+                <option value="">Select a Rental</option>
+              </select> </label
+            ><br />
+            <label
+              >New Return Date:
+              <input type="date" name="newReturnDate" required /> </label
+            ><br />
+            <button type="submit">Update Return Date</button>
           </form>
         </div>
 

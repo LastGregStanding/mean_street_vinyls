@@ -1,24 +1,18 @@
 function refreshData() {
-  loadRentals();
-  loadVinyls();
-  loadPatrons();
+  loadRentalTable();
+  vinylDropdown();
+  patronDropdown();
+  deleteRentalDropdown();
+  updateReturnDateDropdown();
 }
 
 // Get the rentals and fill the rental table
-const loadRentals = async () => {
+const loadRentalTable = async () => {
   try {
     const response = await fetch("/api/rentals/");
     const [data] = await response.json();
     const table = document.getElementById("rentals-table");
     table.innerHTML = "";
-
-    // Load rental dropdown
-    const deleteRentalDropdown = document.getElementById(
-      "delete-rental-dropdown"
-    );
-    // Populate the dropdown
-    deleteRentalDropdown.innerHTML =
-      '<option value="">Select a Rental</option>';
 
     data.forEach((rental) => {
       let formattedDateOfRental;
@@ -62,19 +56,60 @@ const loadRentals = async () => {
 
                       `;
       table.appendChild(row);
-
-      const option = document.createElement("option");
-      option.value = rental.rentalID;
-      option.textContent = `${rental.patronName} - ${rental.vinylTitle} - (Rental #${rental.rentalID})`;
-      deleteRentalDropdown.appendChild(option);
     });
   } catch (error) {
     console.error("Error loading rentals:", error);
   }
 };
 
+// Load the Return Date dropdown
+const updateReturnDateDropdown = async function () {
+  try {
+    const response = await fetch("/api/rentals/");
+    const [data] = await response.json();
+
+    // Load update return dropdown
+    const updateReturnDateDropdown = document.getElementById(
+      "update-return-date-dropdown"
+    );
+
+    // Populate the update return dropdown
+    updateReturnDateDropdown.innerHTML =
+      '<option value="">Select a Rental</option>';
+
+    data.forEach((rental) => {
+      const option = document.createElement("option");
+      option.value = rental.rentalID;
+      option.textContent = `${rental.patronName} - ${rental.vinylTitle}`;
+      updateReturnDateDropdown.appendChild(option);
+    });
+  } catch (error) {}
+};
+
+// Load the delete rental dropdwon
+const deleteRentalDropdown = async function () {
+  try {
+    const response = await fetch("/api/rentals/");
+    const [data] = await response.json();
+    // Load rental dropdown
+    const deleteRentalDropdown = document.getElementById(
+      "delete-rental-dropdown"
+    );
+    // Populate the rental dropdown
+    deleteRentalDropdown.innerHTML =
+      '<option value="">Select a Rental</option>';
+
+    data.forEach((rental) => {
+      const option = document.createElement("option");
+      option.value = rental.rentalID;
+      option.textContent = `${rental.patronName} - ${rental.vinylTitle}`;
+      deleteRentalDropdown.appendChild(option);
+    });
+  } catch (error) {}
+};
+
 // Load vinyls
-const loadVinyls = async () => {
+const vinylDropdown = async () => {
   try {
     const response = await fetch("/api/vinyls");
     const [data] = await response.json();
@@ -98,7 +133,7 @@ const loadVinyls = async () => {
 };
 
 // Fetch patrons from the backend and update the patrons table
-const loadPatrons = async () => {
+const patronDropdown = async () => {
   try {
     const response = await fetch("/api/patrons");
     const [data] = await response.json();
@@ -134,6 +169,47 @@ const loadPatrons = async () => {
   }
 };
 
+// Update return date form submission
+const updateReturnDateForm = document.getElementById("update-return-date-form");
+updateReturnDateForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const rentalID = formData.get("rentalID");
+  const newReturnDate = new Date(formData.get("newReturnDate"));
+
+  const response = await fetch(`/api/rentals/${rentalID}`);
+  const [rentalDetails] = await response.json();
+
+  const rentalDate = new Date(rentalDetails.rentalDate);
+
+  // Make sure the return date is after the rental date
+  if (newReturnDate < rentalDate) {
+    alert("Return date must be after rental date.");
+    return;
+  }
+
+  // If validation passes, update the return date
+  const updateData = {
+    rentalID: rentalID,
+    newReturnDate: formData.get("newReturnDate"),
+  };
+
+  const returnDateResponse = await fetch(`/api/rentals/${rentalID}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updateData),
+  });
+  if (returnDateResponse.ok) {
+    refreshData();
+  } else {
+    alert("Failed to update return date");
+  }
+});
+
+// Add rental form submission
 const addRentalForm = document.getElementById("add-rental-form");
 addRentalForm.addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -159,7 +235,7 @@ addRentalForm.addEventListener("submit", async function (e) {
   }
 });
 
-// Delete a rental
+// Delete a rental for submission
 const deleteRentalForm = document.getElementById("delete-rental-form");
 deleteRentalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
