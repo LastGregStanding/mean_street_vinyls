@@ -10,15 +10,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 const patronRoutes = require("./routes/patronRoutes");
-app.use("/api/patrons", patronRoutes);
-
 const artistRoutes = require("./routes/artistRoutes");
-app.use("/api/artists", artistRoutes);
-
 const vinylRoutes = require("./routes/vinylRoutes");
-app.use("/api/vinyls", vinylRoutes);
-
 const rentalRoutes = require("./routes/rentalRoutes");
+
+app.use("/api/patrons", patronRoutes);
+app.use("/api/artists", artistRoutes);
+app.use("/api/vinyls", vinylRoutes);
 app.use("/api/rentals", rentalRoutes);
 
 // 404 handler
