@@ -1,28 +1,20 @@
 -- -----------------------------------------------------
--- Disable foreign key checks to prevent constraint errors during inserts
--- -----------------------------------------------------
-SET FOREIGN_KEY_CHECKS=0;
-SET AUTOCOMMIT=0;
-
--- -----------------------------------------------------
 -- Drop Existing Tables if They Exist (to prevent conflicts)
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS Vinyls;
-DROP TABLE IF EXISTS Artists;
-DROP TABLE IF EXISTS Patrons;
-DROP TABLE IF EXISTS Rentals;
+DROP TABLE IF EXISTS Rentals CASCADE;
+DROP TABLE IF EXISTS Vinyls CASCADE;
+DROP TABLE IF EXISTS Artists CASCADE;
+DROP TABLE IF EXISTS Patrons CASCADE;
 
 -- -----------------------------------------------------
 -- Create Table: Vinyls
 -- -----------------------------------------------------
 CREATE TABLE Vinyls (
-    vinylID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    artistID INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    label VARCHAR(100) NOT NULL,
-    yearReleased INT NOT NULL,
-    PRIMARY KEY (vinylID),
-    FOREIGN KEY (artistID) REFERENCES Artists(artistID) ON DELETE CASCADE
+    vinylID SERIAL PRIMARY KEY,
+    artistID INT NOT NULL REFERENCES Artists(artistID) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    label TEXT NOT NULL,
+    yearReleased INT NOT NULL
 );
 
 -- -----------------------------------------------------
@@ -37,130 +29,146 @@ INSERT INTO Vinyls (artistID, title, label, yearReleased) VALUES
 -- -----------------------------------------------------
 -- Stored Procedure: GetVinylsWithArtists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS GetVinylsWithArtists;
-DELIMITER //
-CREATE PROCEDURE GetVinylsWithArtists()
+CREATE OR REPLACE FUNCTION GetVinylsWithArtists()
+RETURNS TABLE (
+    vinylID INT,
+    title TEXT,
+    label TEXT,
+    yearReleased INT,
+    artistName TEXT
+)
+AS $$
 BEGIN
-    SELECT Vinyls.vinylID,
-           Vinyls.title,
-           Vinyls.label,
-           Vinyls.yearReleased,
-           Artists.artistName
-    FROM Vinyls
-    LEFT JOIN Artists ON Vinyls.artistID = Artists.artistID
-    ORDER BY Vinyls.vinylID;
-END //
-DELIMITER ;
+    RETURN QUERY
+    SELECT v.vinylID, v.title, v.label, v.yearReleased, a.artistName
+    FROM Vinyls v
+    LEFT JOIN Artists a ON v.artistID = a.artistID
+    ORDER BY v.vinylID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: GetVinyls
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS GetVinyls;
-DELIMITER //
-CREATE PROCEDURE GetVinyls()
+CREATE OR REPLACE FUNCTION GetVinyls()
+RETURNS TABLE (
+    vinylID INT,
+    title TEXT,
+    yearReleased INT
+)
+AS $$
 BEGIN
-    SELECT vinylID, title, yearReleased FROM Vinyls ORDER BY vinylID;
-END //
-DELIMITER ;
+    RETURN QUERY
+    SELECT vinylID, title, yearReleased
+    FROM Vinyls
+    ORDER BY vinylID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: AddVinyl
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS AddVinyl;
-DELIMITER //
-CREATE PROCEDURE AddVinyl (
-    IN p_title VARCHAR(100),
-    IN p_label VARCHAR(100),
-    IN p_yearReleased INT,
-    IN p_artistID INT
+CREATE OR REPLACE FUNCTION AddVinyl(
+    p_title TEXT,
+    p_label TEXT,
+    p_yearReleased INT,
+    p_artistID INT
 )
+RETURNS VOID
+AS $$
 BEGIN
     INSERT INTO Vinyls (title, label, yearReleased, artistID)
     VALUES (p_title, p_label, p_yearReleased, p_artistID);
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: DeleteVinyl
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS DeleteVinyl;
-DELIMITER //
-CREATE PROCEDURE DeleteVinyl(IN p_vinylID INT)
+CREATE OR REPLACE FUNCTION DeleteVinyl(p_vinylID INT)
+RETURNS VOID
+AS $$
 BEGIN
     DELETE FROM Vinyls
     WHERE vinylID = p_vinylID;
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Create Table: Artists
 -- -----------------------------------------------------
 CREATE TABLE Artists (
-    artistID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    artistName VARCHAR(100) NOT NULL,
-    genre VARCHAR(100) NOT NULL,
-    countryOrigin VARCHAR(100) NOT NULL,
-    PRIMARY KEY (artistID)
+    artistID SERIAL PRIMARY KEY,
+    artistName TEXT NOT NULL,
+    genre TEXT NOT NULL,
+    countryOrigin TEXT NOT NULL
 );
 
 -- -----------------------------------------------------
 -- Insert Sample Data: Artists
 -- -----------------------------------------------------
 INSERT INTO Artists (artistName, genre, countryOrigin) VALUES
-    ('Metallica', 'Metal', "USA"),
-    ('Van Halen', 'Classic Rock', "USA"),
-    ('Beatles', 'Classic Rock', "UK");
+    ('Metallica', 'Metal', 'USA'),
+    ('Van Halen', 'Classic Rock', 'USA'),
+    ('Beatles', 'Classic Rock', 'UK');
 
 -- -----------------------------------------------------
 -- Stored Procedure: GetArtists
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS GetArtists;
-DELIMITER //
-CREATE PROCEDURE GetArtists()
+CREATE OR REPLACE FUNCTION GetArtists()
+RETURNS TABLE (
+    artistID INT,
+    artistName TEXT,
+    genre TEXT,
+    countryOrigin TEXT
+)
+AS $$
 BEGIN
-    SELECT artistID, artistName, genre, countryOrigin FROM Artists ORDER BY artistID;
-END //
-DELIMITER ;
+    RETURN QUERY
+    SELECT artistID, artistName, genre, countryOrigin
+    FROM Artists
+    ORDER BY artistID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: AddArtist
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS AddArtist;
-DELIMITER //
-CREATE PROCEDURE AddArtist (
-    IN p_artistName VARCHAR(100),
-    IN p_genre VARCHAR(100),
-    IN p_countryOrigin VARCHAR(100)
+CREATE OR REPLACE FUNCTION AddArtist(
+    p_artistName TEXT,
+    p_genre TEXT,
+    p_countryOrigin TEXT
 )
+RETURNS VOID
+AS $$
 BEGIN
     INSERT INTO Artists (artistName, genre, countryOrigin)
     VALUES (p_artistName, p_genre, p_countryOrigin);
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: DeleteArtist
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS DeleteArtist;
-DELIMITER //
-CREATE PROCEDURE DeleteArtist(IN p_artistID INT)
+CREATE OR REPLACE FUNCTION DeleteArtist(p_artistID INT)
+RETURNS VOID
+AS $$
 BEGIN
     DELETE FROM Artists
     WHERE artistID = p_artistID;
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Create Table: Patrons
 -- -----------------------------------------------------
 CREATE TABLE Patrons (
-    patronID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100) NOT NULL,
-    membershipDate DATE NOT NULL,
-    PRIMARY KEY (patronID)
+    patronID SERIAL PRIMARY KEY,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    membershipDate DATE NOT NULL
 );
 
 -- -----------------------------------------------------
@@ -174,55 +182,60 @@ INSERT INTO Patrons (firstName, lastName, membershipDate) VALUES
 -- -----------------------------------------------------
 -- Stored Procedure: GetPatrons
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS GetPatrons;
-DELIMITER //
-CREATE PROCEDURE GetPatrons()
+CREATE OR REPLACE FUNCTION GetPatrons()
+RETURNS TABLE (
+    patronID INT,
+    firstName TEXT,
+    lastName TEXT,
+    membershipDate DATE
+)
+AS $$
 BEGIN
-    SELECT patronID, firstName, lastName, membershipDate FROM Patrons ORDER BY patronID;
-END //
-DELIMITER ;
+    RETURN QUERY
+    SELECT patronID, firstName, lastName, membershipDate
+    FROM Patrons
+    ORDER BY patronID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: AddPatron
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS AddPatron;
-DELIMITER //
-CREATE PROCEDURE AddPatron (
-    IN p_firstName VARCHAR(100),
-    IN p_lastName VARCHAR(100),
-    IN p_membershipDate DATE
+CREATE OR REPLACE FUNCTION AddPatron(
+    p_firstName TEXT,
+    p_lastName TEXT,
+    p_membershipDate DATE
 )
+RETURNS VOID
+AS $$
 BEGIN
     INSERT INTO Patrons (firstName, lastName, membershipDate)
     VALUES (p_firstName, p_lastName, p_membershipDate);
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: DeletePatron
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS DeletePatron;
-DELIMITER //
-CREATE PROCEDURE DeletePatron(IN p_patronID INT)
+CREATE OR REPLACE FUNCTION DeletePatron(p_patronID INT)
+RETURNS VOID
+AS $$
 BEGIN
     DELETE FROM Patrons
     WHERE patronID = p_patronID;
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Create Table: Rentals 
 -- -----------------------------------------------------
 CREATE TABLE Rentals (
-    rentalID INT AUTO_INCREMENT UNIQUE NOT NULL,
-    vinylID INT NOT NULL,
-    patronID INT NOT NULL,
+    rentalID SERIAL PRIMARY KEY,
+    vinylID INT NOT NULL REFERENCES Vinyls(vinylID) ON DELETE CASCADE,
+    patronID INT NOT NULL REFERENCES Patrons(patronID) ON DELETE CASCADE,
     rentalDate DATE NOT NULL,
-    returnDate DATE NULL,
-    PRIMARY KEY (rentalID),
-    FOREIGN KEY (vinylID) REFERENCES Vinyls(vinylID) ON DELETE CASCADE,
-    FOREIGN KEY (patronID) REFERENCES Patrons(patronID) ON DELETE CASCADE
+    returnDate DATE
 );
 
 -- -----------------------------------------------------
@@ -239,83 +252,84 @@ INSERT INTO Rentals (vinylID, patronID, rentalDate, returnDate) VALUES
 -- Stored Procedure: AddRental
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS AddRental;
-DELIMITER //
-CREATE PROCEDURE AddRental (
-    IN p_vinylID INT,
-    IN p_patronID INT,
-    IN p_rentalDate DATE
+CREATE OR REPLACE FUNCTION AddRental(
+    p_vinylID INT,
+    p_patronID INT,
+    p_rentalDate DATE
 )
+RETURNS VOID
+AS $$
 BEGIN
     INSERT INTO Rentals (vinylID, patronID, rentalDate)
     VALUES (p_vinylID, p_patronID, p_rentalDate);
-END //
-DELIMITER ;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: GetRentals
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS GetRentals;
-DELIMITER //
-CREATE PROCEDURE GetRentals()
+CREATE OR REPLACE FUNCTION GetRentals()
+RETURNS TABLE (
+    rentalID INT,
+    vinylTitle TEXT,
+    patronName TEXT,
+    rentalDate DATE,
+    returnDate DATE
+)
+AS $$
 BEGIN
+    RETURN QUERY
     SELECT
-        Rentals.rentalID,
-        CONCAT(Vinyls.title, ' (', Vinyls.yearReleased, ')') AS vinylTitle,
-        CONCAT(Patrons.firstName, ' ', Patrons.lastName, ' (Joined: ', Patrons.membershipDate, ')') AS patronName,
-        Rentals.rentalDate,
-        Rentals.returnDate
-    FROM Rentals
-    JOIN Vinyls ON Rentals.vinylID = Vinyls.vinylID
-    JOIN Patrons ON Rentals.patronID = Patrons.patronID
-    ORDER BY Rentals.rentalID;
-END //
-DELIMITER ;
+        r.rentalID,
+        v.title || ' (' || v.yearReleased || ')' AS vinylTitle,
+        p.firstName || ' ' || p.lastName || ' (Joined: ' || p.membershipDate || ')' AS patronName,
+        r.rentalDate,
+        r.returnDate
+    FROM Rentals r
+    JOIN Vinyls v ON r.vinylID = v.vinylID
+    JOIN Patrons p ON r.patronID = p.patronID
+    ORDER BY r.rentalID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: GetSpecificRental
 -- -----------------------------------------------------
 
-DROP PROCEDURE IF EXISTS GetSpecificRental;
-DELIMITER //
-CREATE PROCEDURE GetSpecificRental(IN p_rentalID INT)
+CREATE OR REPLACE FUNCTION GetSpecificRental(p_rentalID INT)
+RETURNS TABLE (
+    rentalDate DATE,
+    returnDate DATE
+)
+AS $$
 BEGIN
-    SELECT
-        Rentals.rentalDate,
-        Rentals.returnDate
-    FROM Rentals
-    WHERE rentalID = p_rentalID;
-END //
-DELIMITER ;
+    RETURN QUERY
+    SELECT rentalDate, returnDate FROM Rentals WHERE rentalID = p_rentalID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: UpdateReturnDate
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS UpdateReturnDate;
-DELIMITER //
-CREATE PROCEDURE UpdateReturnDate(IN p_rentalID INT, IN p_newReturnDate DATE)
+CREATE OR REPLACE FUNCTION UpdateReturnDate(
+    p_rentalID INT,
+    p_newReturnDate DATE
+)
+RETURNS VOID
+AS $$
 BEGIN
-    UPDATE Rentals
-    SET returnDate = p_newReturnDate
-    WHERE rentalID = p_rentalID;
-END //
-DELIMITER ;
+    UPDATE Rentals SET returnDate = p_newReturnDate WHERE rentalID = p_rentalID;
+END;
+$$ LANGUAGE plpgsql;
 
 -- -----------------------------------------------------
 -- Stored Procedure: DeleteRental
 -- -----------------------------------------------------
-DROP PROCEDURE IF EXISTS DeleteRental;
-DELIMITER //
-CREATE PROCEDURE DeleteRental(IN p_rentalID INT)
+CREATE OR REPLACE FUNCTION DeleteRental(p_rentalID INT)
+RETURNS VOID
+AS $$
 BEGIN
-    DELETE FROM Rentals
-    WHERE rentalID = p_rentalID;
-END //
-DELIMITER ;
-
--- -----------------------------------------------------
--- Re-enable foreign key checks and commit changes
--- -----------------------------------------------------
-SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
+    DELETE FROM Rentals WHERE rentalID = p_rentalID;
+END;
+$$ LANGUAGE plpgsql;
